@@ -1,0 +1,190 @@
+<html>
+
+<!--=======================================================================-->
+
+<head>
+    <script type='text/javascript' src='http://epilog.stanford.edu/javascript/epilog.js'></script>
+    <script type='text/javascript' src='http://minimal.stanford.edu/worksheets/javascript/worksheets.js'></script>
+</head>
+
+<!--=======================================================================-->
+
+<style>
+body {
+    background-color: #e8e8e8;
+}
+
+table {
+  border-collapse: collapse;
+  font-family: Calibri, sans-serif;
+  border: 4px solid;
+}
+
+td {
+  border: solid medium;
+  height: 55px; width: 55px;
+  border: 2px solid;
+  text-align: center;
+  font-weight: bold;
+  font-size: 31;
+  padding: 0;
+}
+
+.heading {
+   font-size: 43px;
+   margin: 20px 20px;
+}
+</style>
+
+<!--=======================================================================-->
+
+<body onload='initialize()'>
+  <center>
+
+<!--=======================================================================-->
+
+<center>
+  <h1 class="heading">Nurikabe</h1>
+
+  <h1 id='intro'></h1>
+
+  <table>
+      <tr> <td id='mark(1,1)'>&nbsp; <td id='mark(1,2)'>&nbsp; <td id='mark(1,3)'>&nbsp; <td id='mark(1,4)'>&nbsp; <td id='mark(1,5)'>&nbsp;
+      <tr> <td id='mark(2,1)'>&nbsp; <td id='mark(2,2)'>&nbsp; <td id='mark(2,3)'>&nbsp; <td id='mark(2,4)'>&nbsp; <td id='mark(2,5)'>&nbsp;
+      <tr> <td id='mark(3,1)'>&nbsp; <td id='mark(3,2)'>&nbsp; <td id='mark(3,3)'>&nbsp; <td id='mark(3,4)'>3 <td id='mark(3,5)'>&nbsp;
+      <tr> <td id='mark(4,1)'>5 <td id='mark(4,2)'>&nbsp; <td id='mark(4,3)'>4 <td id='mark(4,4)'>&nbsp; <td id='mark(4,5)'>&nbsp;
+      <tr> <td id='mark(5,1)'>&nbsp; <td id='mark(5,2)'>&nbsp; <td id='mark(5,3)'>&nbsp; <td id='mark(5,4)'>&nbsp; <td id='mark(5,5)'>&nbsp;
+  </table> <br>
+  
+  <a href='medium.html'><button id='reset'>Reset</button></a>
+  <button id='check' type='button' onclick='modbutton(this)'>Check</button>
+  <button id='solution' type='button' onclick='modbutton(this)'>Solve</button>
+  <button disabled='true'>Previous</button>
+  <a href='medium2.html'><button>Next</button></a>
+  <a href='index.html'><button id='back'>Home</button></a>
+	
+</center>
+
+
+<!--=======================================================================-->
+
+<textarea id='lambda' type='text/hrf' style='display:none'>
+
+  cell(1, 1, white)
+  cell(1, 2, white)
+  cell(1, 3, white)
+  cell(1, 4, white)
+  cell(1, 5, white)
+  cell(2, 1, white)
+  cell(2, 2, white)
+  cell(2, 3, white)
+  cell(2, 4, white)
+  cell(2, 5, white)
+  cell(3, 1, white)
+  cell(3, 2, white)
+  cell(3, 3, white)
+  cell(3, 4, 3)
+  cell(3, 5, white)
+  cell(4, 1, 5)
+  cell(4, 2, white)
+  cell(4, 3, 4)
+  cell(4, 4, white)
+  cell(4, 5, white)
+  cell(5, 1, white)
+  cell(5, 2, white)
+  cell(5, 3, white)
+  cell(5, 4, white)
+  cell(5, 5, white) 
+  
+</textarea>
+
+<!--=======================================================================-->
+
+<textarea id='library' type='text/hrf' style='display:none'>
+  click(mark(X,Y)) :: mark(X, Y)
+
+  mark(X, Y) :: cell(X, Y, white)  ==> ~click(check) & ~cell(X, Y, white) & cell(X, Y, black)
+  mark(X, Y) :: cell(X, Y, black)  ==> ~click(check) & ~cell(X, Y, black) & cell(X, Y, white)
+
+  adjacent(c(X,Y,Z),c(I,Y,K)) :- cell(X,Y,Z) & cell(I,Y,K) & evaluate(abs(minus(X,I)),1)
+
+  adjacent(c(X,Y,Z),c(X,J,K)) :- cell(X,Y,Z) & cell(X,J,K) & evaluate(abs(minus(Y,J)),1)
+
+
+  is_white(c(X, Y, Z)) :- cell(X, Y, Z) & same(Z,white)
+
+  is_black(c(X, Y, Z)) :- cell(X, Y, Z) & same(Z,black)
+
+  is_num(c(X, Y, Z)) :- cell(X, Y, Z) & distinct(Z, white) & distinct(Z, black)
+
+
+  whitepath(X,X,P) :- is_num(X)
+
+  whitepath(X,Z,P) :- is_white(X) & adjacent(X,Y) & ~member(Y,P) & whitepath(Y,Z,cons(Y,P))
+
+  in_island(X,Y) :- whitepath(X,Y,nil)
+
+  sea_check :- evaluate(countofall(W, sea(W, X, Y, Z)), 0)
+
+  sea(c(X, Y, Z), c(I, J, K), c(A, B, C), c(D, E, F)) :- is_black(c(X, Y, Z)) & is_black(c(I, J, K)) & is_black(c(A, B, C)) & is_black(c(D, E, F)) & mutex(c(X, Y, Z), c(I, J, K), c(A, B, C), c(D, E, F)) & four_cells(c(X, Y, Z), c(I, J, K), c(A, B, C), c(D, E, F))
+
+  four_cells(c(X, Y, Z), c(I, J, K), c(A, B, C), c(D, E, F)) :- evaluate(minus(J, Y), 1) & evaluate(minus(E, B), 1) & same(Y, B) & same(J, E) & evaluate(minus(A, X), 1) & evaluate(minus(D, I), 1) & same(X, I) & same(A, D)
+
+  island_check :- evaluate(countofall(A, in_island(A, c(3,4,3))), 3) & evaluate(countofall(B, in_island(B, c(4,1,5))), 5) & evaluate(countofall(C, in_island(C, c(4,3,4))), 4)
+
+  winner :- sea_check & island_check
+
+
+  innerhtml(mark(M, N)," ") :- cell(M,N,white)
+  innerhtml(mark(M, N)," ") :- cell(M,N,black)
+  innerhtml(intro, "Congratulations, you have solved it!") :- click(check) & winner
+
+  style(mark(X, Y),"backgroundColor","#ffffff") :- cell(X, Y, W) & distinct(W, black)
+  style(mark(X, Y),"backgroundColor","#000000") :- cell(X, Y, black)
+
+  attribute(mark(M,N),"onclick","modbutton(this)") :- active(M,N)
+
+  style(mark(M,N),"cursor","pointer") :- active(M,N) 
+  style(mark(M,N),"cursor","text") :- cell(M,N,W) & ~active(M,N)
+
+  active(M, N) :- cell(M, N, white)
+  active(M, N) :- cell(M, N, black)
+
+
+  click(solution) :: ~click(check)
+  click(solution) :: cell(1, 1, X) ==> ~cell(1, 1, X) & cell(1,1,white)
+  click(solution) :: cell(1, 2, X) ==> ~cell(1, 2, X) & cell(1,2,black)
+  click(solution) :: cell(1, 3, X) ==> ~cell(1, 3, X) & cell(1,3,black)
+  click(solution) :: cell(1, 4, X) ==> ~cell(1, 4, X) & cell(1,4,black)
+  click(solution) :: cell(1, 5, X) ==> ~cell(1, 5, X) & cell(1,5,black)
+  click(solution) :: cell(2, 1, X) ==> ~cell(2, 1, X) & cell(2,1,white)
+  click(solution) :: cell(2, 2, X) ==> ~cell(2, 2, X) & cell(2,2,black)
+  click(solution) :: cell(2, 3, X) ==> ~cell(2, 3, X) & cell(2,3,white)
+  click(solution) :: cell(2, 4, X) ==> ~cell(2, 4, X) & cell(2,4,white)
+  click(solution) :: cell(2, 5, X) ==> ~cell(2, 5, X) & cell(2,5,black)
+  click(solution) :: cell(3, 1, X) ==> ~cell(3, 1, X) & cell(3,1,white)
+  click(solution) :: cell(3, 2, X) ==> ~cell(3, 2, X) & cell(3,2,black)
+  click(solution) :: cell(3, 3, X) ==> ~cell(3, 3, X) & cell(3,3,black)
+  click(solution) :: cell(3, 4, X) ==> ~cell(3, 4, X) & cell(3,4,3)
+  click(solution) :: cell(3, 5, X) ==> ~cell(3, 5, X) & cell(3,5,black)
+  click(solution) :: cell(4, 1, X) ==> ~cell(4, 1, X) & cell(4,1,5)
+  click(solution) :: cell(4, 2, X) ==> ~cell(4, 2, X) & cell(4,2,black)
+  click(solution) :: cell(4, 3, X) ==> ~cell(4, 3, X) & cell(4,3,4)
+  click(solution) :: cell(4, 4, X) ==> ~cell(4, 4, X) & cell(4,4,black)
+  click(solution) :: cell(4, 5, X) ==> ~cell(4, 5, X) & cell(4,5,black)
+  click(solution) :: cell(5, 1, X) ==> ~cell(5, 1, X) & cell(5,1,white)
+  click(solution) :: cell(5, 2, X) ==> ~cell(5, 2, X) & cell(5,2,black)
+  click(solution) :: cell(5, 3, X) ==> ~cell(5, 3, X) & cell(5,3,white)
+  click(solution) :: cell(5, 4, X) ==> ~cell(5, 4, X) & cell(5,4,white)
+  click(solution) :: cell(5, 5, X) ==> ~cell(5, 5, X) & cell(5,5,white)
+
+</textarea>
+
+<!--=======================================================================-->
+
+  </center>
+</body>
+
+<!--=======================================================================-->
+
+</html>

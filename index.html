@@ -1,0 +1,69 @@
+<html>
+<head>
+<style>
+body {
+    background-color: #e8e8e8;
+}
+
+.button {
+  border: none;
+  color: white;
+  width: 100px;
+  height: 50px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 22px;
+  margin: 10px 10px;
+  cursor: pointer;
+}
+
+.heading {
+   font-size: 43px;
+   margin: 20px 20px;
+}
+
+div {
+  width: 600px;
+  padding: 10px;
+  font-size: 20px;
+  text-align: justify;
+}
+
+.button1 {background-color: #3ea942;}
+.button2 {background-color: #fcad02;}
+.button3 {background-color: #c42a0b;}
+</style>
+</head>
+
+<body>
+
+<center>
+    <h1 class="heading">Nurikabe</h1>
+
+    <div>
+      <p>Nurikabe is a logic based game played on a grid of cells, some of which are numbered. Cells which aren't
+        numbered can either be white or black. The player is tasked with changing the color of the non-numbered cells
+        so that the following rules are met.
+        <ol>
+          <li>Each numbered cell is in an island, and the number of cells in each island corresponds to the numbered cell in 
+            that island.</li>
+          <li>Each island must contain exactly one numbered cell.</li>
+          <li>There must be only one sea, which can't contain any pools.</li>
+        </ol>
+        <br>
+      <em>Definitions:</em> <br>
+      <strong>Adjacent</strong> - Horizontally or vertically, but not diagonally. <br>
+      <strong>Island</strong> - A collection of white cells adjcent to each other, including the numbered cell.<br>
+      <strong>Sea</strong> - A collection of black cells adjacent to each other.<br>
+      <strong>Pool</strong> - A 2x2 collection of black cells.
+      </p>
+    </div>
+
+    <a href="easy.html"><button class="button button1">Easy</button></a>
+    <a href="medium.html"><button class="button button2">Medium</button></a>
+    <a href="hard.html"><button class="button button3">Hard</button></a>
+</center>
+
+</body>
+</html>
