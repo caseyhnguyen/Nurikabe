@@ -1,4 +1,4 @@
-# Nurikabe
+# Nurikabe Puzzle Web Application
 Interactive Nurikabe game that allows users to solve logic puzzles of varying difficulty and use a dynamic solver for help. Created using logic programming implemented in HTML, CSS, and Javascript.
 
 Nurikabe game is a logic puzzle in which the player must fill in a grid with black and white cells such that the resulting pattern satisfies certain constraints. The goal is to create a pattern in which all of the white cells form a single connected region and all of the black cells form a series of islands of various sizes. 
